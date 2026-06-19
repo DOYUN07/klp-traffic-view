@@ -5,9 +5,9 @@
 
 보행 경로 상의 **횡단보도 신호등 잔여시간**을 실시간으로 받아, **언제 건너고 어떤 속도로 걸어야 신호 대기 없이 도착하는지**를 안내하는 모바일 웹앱. 일반 지도앱이 "최단 거리"를 안내한다면, 이 앱은 **"신호를 가장 적게 기다리는 보행"** 을 안내하는 것이 핵심 차별점.
 
-### ▶ [라이브 데모 열기](https://blackdew.github.io/klp-traffic-view/)
+### ▶ [라이브 데모 열기](https://doyun07.github.io/klp-traffic-view/)
 
-[![데모](https://img.shields.io/badge/live%20demo-▶%20실행-1FA463?style=for-the-badge)](https://blackdew.github.io/klp-traffic-view/)
+[![데모](https://img.shields.io/badge/live%20demo-▶%20실행-1FA463?style=for-the-badge)](https://doyun07.github.io/klp-traffic-view/)
 
 > 데모는 API 키 없이 **시뮬레이션 모드**로 동작합니다(상단 배지로 표시). 실데이터 연동 방법은 아래 [API 키 설정](#실행-방법) 참고.
 >
@@ -41,7 +41,7 @@
 
 빌드 도구가 필요 없습니다. 용도에 따라 세 가지 방법:
 
-1. **라이브 데모 (권장)**: [blackdew.github.io/klp-traffic-view](https://blackdew.github.io/klp-traffic-view/) — 설치 없이 바로 실행. 소스 버전을 GitHub Pages로 서빙해 로딩이 빠름.
+1. **라이브 데모 (권장)**: [doyun07.github.io/klp-traffic-view](https://doyun07.github.io/klp-traffic-view/) — 설치 없이 바로 실행. 소스 버전을 GitHub Pages로 서빙해 로딩이 빠름.
 2. **오프라인 단일 파일**: 루트의 [`신호등 길찾기 앱.html`](신호등%20길찾기%20앱.html)을 더블클릭 — 모든 코드·에셋이 인라인된 23MB 번들이라 **인터넷 없이도** 열림(첫 로딩 시 23MB 다운로드). 시연·배포 사본 전달용.
 3. **로컬 소스 서버**: 개발용. `traffic_view/` 폴더를 로컬 서버로 서빙 (jsx를 `fetch`하므로 `file://` 직접 열기는 CORS로 실패).
    ```bash

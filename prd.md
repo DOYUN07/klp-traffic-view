@@ -47,7 +47,7 @@
 ## 3. 작업 계획
 
 ### Phase 1 — 라이브 데모 배포 (핵심)
-1. **루트 `index.html` 진입점 추가** — 소스 버전(`traffic_view/*.jsx`)을 로드해 `blackdew.github.io/klp-traffic-view/` 깔끔한 URL 제공.
+1. **루트 `index.html` 진입점 추가** — 소스 버전(`traffic_view/*.jsx`)을 로드해 `doyun07.github.io/klp-traffic-view/` 깔끔한 URL 제공.
 2. **GitHub Pages 활성화** — `main` 브랜치 루트에서 서빙 (`gh` CLI 설정).
 3. **로딩 인디케이터** — 트랜스파일 중 빈 화면 대신 간단한 스피너.
 4. **데모 모드 배너** — API 키 없이 시뮬레이션으로 동작 중임을 사용자에게 안내.
@@ -64,7 +64,7 @@
 
 ## 4. 완료 기준 (Success Criteria) — ✅ 전체 충족 (2026-06-19)
 
-- [x] `blackdew.github.io/klp-traffic-view/`에서 데모가 **클릭 한 번에 동작**한다.
+- [x] `doyun07.github.io/klp-traffic-view/`에서 데모가 **클릭 한 번에 동작**한다.
 - [x] 첫 로딩 시 빈 화면 없이 로딩 상태가 보인다.
 - [x] 키 없이도 시뮬레이션으로 신호가 흐르며, 데모 모드임이 사용자에게 안내된다.
 - [x] README 상단에 라이브 데모 링크와 대표 스크린샷이 노출된다.
