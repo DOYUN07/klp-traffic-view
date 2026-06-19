@@ -25,8 +25,15 @@ const SignalAPI = {
   BASE: "https://apis.data.go.kr/B551982/rti",
   OP_SIGNAL: "/tl_drct_info",
 
-  // 배포된 전용 Cloudflare Worker 프록시 (apis.data.go.kr 만 허용).
-  PROXY: "https://traffic-view.dmsrb0507.workers.dev/?url=",
+  // 프록시 우선순위 목록 — 위에서부터 시도하고 실패하면 다음으로 넘어갑니다(자동 failover).
+  // 단일 프록시 의존(SPOF)을 피하려면 본인 Cloudflare Worker를 배포해 맨 앞에 추가하세요.
+  // (배포법: proxy/cloudflare-worker.js, README "프록시" 참고. 모두 apis.data.go.kr 만 허용)
+  PROXIES: [
+    // "https://<본인계정>.workers.dev/?url=",   // ← 배포 후 여기에 추가(권장 1순위)
+    "https://traffic-view.dmsrb0507.workers.dev/?url=",
+  ],
+
+  _activeProxy: null,   // 직전 폴링에서 성공한 프록시를 기억해 다음에 우선 사용
 
   // 대상: 서울특별시. (이 API의 보행신호 실데이터는 서울에서 제공됨.
   //  부산=미제공, 울산=보행신호 없음, 제주/서울만 유효)
@@ -46,25 +53,49 @@ const SignalAPI = {
   ROWS: 1000,
   TIMEOUT_MS: 9000,
 
-  _url(pageNo) {
+  // data.go.kr 원본 요청 URL(프록시 미적용).
+  _targetUrl(pageNo) {
     const qs = new URLSearchParams({
       serviceKey: this.API_KEY, type: "json", numOfRows: String(this.ROWS), pageNo: String(pageNo),
       ...this.PARAMS,
     });
-    const full = `${this.BASE}${this.OP_SIGNAL}?${qs.toString()}`;
-    return this.PROXY ? this.PROXY + encodeURIComponent(full) : full;
+    return `${this.BASE}${this.OP_SIGNAL}?${qs.toString()}`;
   },
 
-  async _getPage(pageNo) {
+  // 특정 프록시(빈 문자열이면 직접 호출)로 한 번 시도. 타임아웃·HTTP 오류는 throw.
+  async _fetchVia(proxy, target) {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), this.TIMEOUT_MS);
     try {
-      const res = await fetch(this._url(pageNo), { signal: ctrl.signal, headers: { Accept: "application/json" } });
+      const url = proxy ? proxy + encodeURIComponent(target) : target;
+      const res = await fetch(url, { signal: ctrl.signal, headers: { Accept: "application/json" } });
       if (!res.ok) throw new Error("HTTP " + res.status);
       return await res.json();
     } finally {
       clearTimeout(t);
     }
+  },
+
+  // 프록시 목록을 순서대로 시도하고, 한 곳이라도 성공하면 그 결과를 반환(자동 failover).
+  // 직전에 성공한 프록시를 맨 앞으로 당겨 불필요한 재시도를 줄임.
+  async _getPage(pageNo) {
+    const target = this._targetUrl(pageNo);
+    const list = this.PROXIES.length ? this.PROXIES : [""];
+    const ordered = this._activeProxy
+      ? [this._activeProxy, ...list.filter((p) => p !== this._activeProxy)]
+      : [...list];
+    let lastErr;
+    for (const proxy of ordered) {
+      try {
+        const data = await this._fetchVia(proxy, target);
+        this._activeProxy = proxy;     // 다음 페이지/폴링에서 우선 사용
+        return data;
+      } catch (e) {
+        lastErr = e;                   // 다음 프록시로 failover
+      }
+    }
+    this._activeProxy = null;          // 전부 실패 → 기억 초기화
+    throw lastErr || new Error("모든 프록시 실패");
   },
 
   _rows(data) {
