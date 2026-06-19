@@ -4,8 +4,8 @@
 
    ── 실제 응답 스키마 (확인 완료) ──────────────────────────────
    body.items.item[] : 교차로 1개 = 1행
-     stdgCd   법정동코드 (예 "2600000000" = 부산광역시, 앞 2자리 26)
-     lclgvNm  지자체명   (예 "부산광역시")
+     stdgCd   법정동코드 (예 "1100000000" = 서울특별시, 앞 2자리 11)
+     lclgvNm  지자체명   (예 "서울특별시")
      crsrdId  교차로 ID
      {방향}{종류}RmndCs / {방향}{종류}SttsNm
        방향: nt(북) et(동) st(남) wt(서) ne(북동) se(남동) sw(남서) nw(북서)
@@ -15,7 +15,7 @@
 
    ── 라이브로 켜려면 ───────────────────────────────────────────
    PROXY 에 배포한 프록시 주소만 넣으면 됩니다 (proxy/cloudflare-worker.js).
-   MAP 을 비워두면 부산 보행신호 교차로를 경로에 "자동 배정"해 바로 동작합니다.
+   MAP 을 비워두면 서울 보행신호 교차로를 경로에 "자동 배정"해 바로 동작합니다.
 */
 
 const SignalAPI = {
@@ -36,7 +36,7 @@ const SignalAPI = {
   PARAMS: {},
 
   // 내 경로 신호등(SIGNALS.id) ↔ 실제 (crsrdId, 방향) 수동 매핑.
-  // 비워두면 부산 보행신호 교차로를 순서대로 자동 배정합니다.
+  // 비워두면 서울 보행신호 교차로를 순서대로 자동 배정합니다.
   MAP: {
     // s1: { crsrdId: "12345", dir: "nt" },
   },
@@ -97,7 +97,7 @@ const SignalAPI = {
     return out;
   },
 
-  // 메인: 부산 보행신호를 조회해 { [signalId]: {color, remain, cycle} } 반환
+  // 메인: 서울 보행신호를 조회해 { [signalId]: {color, remain, cycle} } 반환
   async fetchOnce() {
     // 1) 대상 지역 행 수집 (필요 시 여러 페이지)
     let region = [];
