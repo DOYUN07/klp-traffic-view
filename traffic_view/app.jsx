@@ -746,7 +746,7 @@ function App() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  // ----- 실시간 신호 데이터 연동 (B551982 /tl_drct_info, 부산) -----
+  // ----- 실시간 신호 데이터 연동 (B551982 /tl_drct_info, 서울) -----
   const [dataSource, setDataSource] = useState("connecting");
   const liveRef = useRef(null);     // { data, baseSim }
   useEffect(() => {
